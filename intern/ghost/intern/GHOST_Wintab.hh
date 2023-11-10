@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <vector>
 #include <wtypes.h>
+#include <stdint.h>
 
 #include "GHOST_Types.h"
 
@@ -235,7 +236,7 @@ class GHOST_Wintab {
                unique_hctx hctx,
                Coord tablet,
                Coord system,
-               int queueSize);
+               uint64_t queueSize);
 
   /**
    * Convert Wintab system mapped (mouse) buttons into Ghost button mask.
