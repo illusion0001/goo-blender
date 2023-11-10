@@ -38,3 +38,8 @@ jobs:
       run: ./make.bat
     - working-directory: ${{ env.blender_build }}
       run: ls -R
+
+    - uses: actions/upload-artifact@main
+      with:
+        name: Goo Engine (Release)
+        path: C:\blender-build\build_windows_x64_vc17_Release
