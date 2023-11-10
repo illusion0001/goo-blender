@@ -7,7 +7,6 @@
 #define _USE_MATH_DEFINES
 
 #include "GHOST_Wintab.hh"
-#include <stdint.h>
 
 GHOST_Wintab *GHOST_Wintab::loadWintab(HWND hwnd)
 {
