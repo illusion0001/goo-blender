@@ -1,0 +1,28 @@
+name: Blender Build (Windows)
+
+on: push
+
+env:
+  blender_build: C:\blender-build
+  clone_path: goo-engine
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+
+    - run: |
+        mkdir ${{ env.blender_build }}
+        mkdir ${{ env.blender_build }}/lib
+    - working-directory: ${{ env.blender_build }}
+      run: git clone https://github.com/illusion0001/goo-engine.git -b goo-engine-v3.6-release --depth 1 ${{ env.clone_path }}
+    - working-directory: ${{ env.blender_build }}/${{ env.clone_path }}
+      run: pip install -r requirements.txt
+    - working-directory: ${{ env.blender_build }}/lib
+      run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/blender-3.6-release/lib/win64_vc15
+    - working-directory: ${{ env.blender_build }}/${{ env.clone_path }}
+      run: ./make.bat update
+    - working-directory: ${{ env.blender_build }}/${{ env.clone_path }}
+      run: ./make.bat
+    - working-directory: ${{ env.blender_build }}
+      run: ls -R
