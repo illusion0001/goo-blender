@@ -38,7 +38,7 @@ jobs:
     - working-directory: ${{ env.build_dir }}
       run: ./make.bat
     - working-directory: ${{ env.blender_build }}
-      run: 7z a -m0=LZMA2 -mx9 ${{ env.blender_build }}/${{ env.arc_name }} ${{ env.blender_build }}/build_windows_x64_vc17_Release
+      run: 7z a -m0=LZMA2 -mx9 ${{ env.blender_build }}/${{ env.arc_name }} ${{ env.blender_build }}/build_windows_x64_vc17_Release/bin/Release
 
     - uses: actions/upload-artifact@main
       with:
