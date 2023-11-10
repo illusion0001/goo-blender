@@ -6,13 +6,15 @@ env:
   blender_build: C:\blender-build
   clone_path: goo-engine
   tag_name: blender-3.6-release
-  build_dir: ${{ env.blender_build }}/${{ env.clone_path }}
-  lib_dir: ${{ env.blender_build }}/lib
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
+
+    - run: |
+        echo "build_dir=${{ env.blender_build }}/${{ env.clone_path }}" >> $Env:GITHUB_ENV
+        echo "lib_dir=${{ env.blender_build }}/lib" >> $Env:GITHUB_ENV
 
     - run: |
         mkdir ${{ env.build_dir }}
@@ -21,18 +23,18 @@ jobs:
     - id: cache-svn-dep
       uses: actions/cache@main
       with:
-        path: ${{ env.blender_build }}/lib
+        path: ${{ env.lib_dir }}
         key: ${{ runner.os }}-${{ env.tag_name }}
 
     - working-directory: ${{ env.blender_build }}
       run: git clone https://github.com/illusion0001/goo-engine.git -b goo-engine-v3.6-release --depth 1 ${{ env.clone_path }}
-    - working-directory: ${{ env.blender_build }}/${{ env.clone_path }}
+    - working-directory: ${{ env.build_dir }}
       run: pip install -r requirements.txt
-    - working-directory: ${{ env.blender_build }}/lib
+    - working-directory: ${{ env.lib_dir }}
       run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
-    - working-directory: ${{ env.blender_build }}/${{ env.clone_path }}
+    - working-directory: ${{ env.build_dir }}
       run: ./make.bat update
-    - working-directory: ${{ env.blender_build }}/${{ env.clone_path }}
+    - working-directory: ${{ env.build_dir }}
       run: ./make.bat
     - working-directory: ${{ env.blender_build }}
       run: ls -R
