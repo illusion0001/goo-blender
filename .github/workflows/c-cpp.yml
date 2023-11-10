@@ -6,6 +6,7 @@ env:
   blender_build: C:\blender-build
   clone_path: goo-engine
   tag_name: blender-3.6-release
+  arc_name: goo-blender.7z
 
 jobs:
   build:
@@ -37,9 +38,9 @@ jobs:
     - working-directory: ${{ env.build_dir }}
       run: ./make.bat
     - working-directory: ${{ env.blender_build }}
-      run: ls -R
+      run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_name }} ${{ env.blender_build }}/build_windows_x64_vc17_Release
 
     - uses: actions/upload-artifact@main
       with:
-        name: Goo Engine (Release)
-        path: C:\blender-build\build_windows_x64_vc17_Release
+        name: ${{ env.arc_name }}
+        path: ${{ env.arc_name }}
