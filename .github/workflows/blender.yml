@@ -1,0 +1,61 @@
+name: Blender Build (Windows)
+
+on: [ push, pull_request, workflow_dispatch ]
+
+env:
+  lib_dir: C:\blender-build/lib
+  tag_name: blender-4.0-release
+  branch_name: ${{ github.head_ref || github.ref_name }}
+
+# For release create
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+      with:
+        fetch-depth: 0
+    - name: Create working folders
+      run: |
+        mkdir ${{ env.lib_dir }}
+        New-Item -ItemType SymbolicLink -Path "../lib" -Target "${{ env.lib_dir }}"
+        $cmdOutput = Split-Path -Path $pwd -Leaf
+        $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
+        $_name = "$cmdOutput-${{ env.branch_name }}-$_ver"
+        echo "commit_ver=$_name" >> "$Env:GITHUB_ENV"
+        echo "arc_name=$_name.7z" >> "$Env:GITHUB_ENV"
+        echo "arc_path=${{ github.workspace }}/$_name.7z" >> "$Env:GITHUB_ENV"
+    - name: Cache Precompiled Dependencies
+      id: cache-svn-dep
+      uses: actions/cache@main
+      with:
+        path: ${{ env.lib_dir }}
+        key: ${{ runner.os }}-${{ env.tag_name }}
+    - name: Checkout Precompiled Dependencies
+      working-directory: ${{ env.lib_dir }}
+      run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
+    - name: Update dependencies
+      run: ./make.bat update
+    - name: Build Blender
+      run: ./make.bat
+    - name: List Files
+      run: ls -R ..
+    - name: Zip Release
+      run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_path }} ../build_windows_x64_vc17_Release/bin/Release
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@main
+      if: false
+      with:
+        name: ${{ env.arc_name }}
+        path: ${{ env.arc_path }}
+
+    - name: Create Blender Release
+      working-directory: ${{ env.build_dir }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release create "${{ env.commit_ver }}" ${{ env.arc_path }} --target ${{ GITHUB.SHA }} -t "${{ env.commit_ver }}"
