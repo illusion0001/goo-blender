@@ -7,6 +7,7 @@
 #define _USE_MATH_DEFINES
 
 #include "GHOST_Wintab.hh"
+#include <stdint.h>
 
 GHOST_Wintab *GHOST_Wintab::loadWintab(HWND hwnd)
 {
@@ -177,7 +178,7 @@ GHOST_Wintab::GHOST_Wintab(unique_hmodule handle,
                            unique_hctx hctx,
                            Coord tablet,
                            Coord system,
-                           int queueSize)
+                           uint64_t queueSize)
     : m_handle{std::move(handle)},
       m_fpInfo{info},
       m_fpGet{get},
