@@ -27,7 +27,7 @@ jobs:
         $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
         echo "commit_ver=${{ env.branch_name }}-$_ver" >> "$Env:GITHUB_ENV"
         echo "arc_name=${{ env.branch_name }}-$_ver.7z" >> "$Env:GITHUB_ENV"
-    - name: test
+    - name: test 1
       env:
         BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
       run: echo ${{ env.BRANCH_NAME }}
