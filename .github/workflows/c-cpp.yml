@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@main
       with:
         path: ${{ env.lib_dir }}
-        key: ${{ runner.os }}-${{ env.tag_name }}
+        key: ${{ runner.os }}--${{ env.tag_name }}
     - name: Install python dependencies
       run: pip install -r requirements.txt
     - name: Checkout Precompiled Dependencies
