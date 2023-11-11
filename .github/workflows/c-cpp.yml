@@ -16,29 +16,21 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-
+    - name: Checkout
+      uses: actions/checkout@main
     - name: Set working folder names
-      run: |
-        echo "build_dir=${{ env.blender_build }}/${{ env.clone_path }}" >> $Env:GITHUB_ENV
-        echo "lib_dir=${{ env.blender_build }}/lib" >> $Env:GITHUB_ENV
-
+      run: echo "lib_dir=${{ env.blender_build }}/lib" >> $Env:GITHUB_ENV
     - name: Create working folders
       run: |
-        mkdir ${{ env.build_dir }}
         mkdir ${{ env.lib_dir }}
-
+        mklink /d ../lib ${{ env.lib_dir }}
     - name: Cache Precompiled Dependencies
       id: cache-svn-dep
       uses: actions/cache@main
       with:
         path: ${{ env.lib_dir }}
         key: ${{ runner.os }}-${{ env.tag_name }}
-
     - name: Setup envoriment variables
-      working-directory: ${{ env.blender_build }}
-      run: git clone https://github.com/illusion0001/goo-engine.git -b ${{ env.branch_name }} ${{ env.build_dir }}
-    - name: Setup envoriment variables
-      working-directory: ${{ env.build_dir }}
       run: |
           $cmdOutput = Split-Path -Path $pwd -Leaf
           $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
@@ -49,14 +41,13 @@ jobs:
       working-directory: ${{ env.lib_dir }}
       run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
     - name: Update dependencies
-      working-directory: ${{ env.build_dir }}
       run: ./make.bat update
     - name: Build Blender
-      working-directory: ${{ env.build_dir }}
       run: ./make.bat
+    - name: List Files
+      run: ls -R ..
     - name: Zip Release
-      working-directory: ${{ env.blender_build }}
-      run: 7z a -m0=LZMA2 -mx9 ${{ env.blender_build }}/${{ env.arc_name }} ${{ env.blender_build }}/build_windows_x64_vc17_Release/bin/Release
+      run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_name }} ../build_windows_x64_vc17_Release/bin/Release
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
