@@ -3,8 +3,7 @@ name: Blender Build (Windows)
 on: push
 
 env:
-  blender_build: C:\blender-build
-  clone_path: goo-engine
+  lib_dir: C:\blender-build/lib
   tag_name: blender-3.6-release
   branch_name: goo-engine-v3.6-release
 
@@ -20,25 +19,22 @@ jobs:
       uses: actions/checkout@main
       with:
         fetch-depth: 0
-    - name: Set working folder names
-      run: echo "lib_dir=${{ env.blender_build }}/lib" >> $Env:GITHUB_ENV
     - name: Create working folders
       run: |
         mkdir ${{ env.lib_dir }}
         New-Item -ItemType SymbolicLink -Path "../lib" -Target "${{ env.lib_dir }}"
+        $cmdOutput = Split-Path -Path $pwd -Leaf
+        $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
+        echo "commit_ver=${{ env.branch_name }}-$_ver" >> "$Env:GITHUB_ENV"
+        echo "arc_name=${{ env.branch_name }}-$_ver.7z" >> "$Env:GITHUB_ENV"
     - name: Cache Precompiled Dependencies
       id: cache-svn-dep
       uses: actions/cache@main
       with:
         path: ${{ env.lib_dir }}
         key: ${{ runner.os }}-${{ env.tag_name }}
-    - name: Setup envoriment variables
-      run: |
-          $cmdOutput = Split-Path -Path $pwd -Leaf
-          $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
-          echo "commit_ver=${{ env.branch_name }}-$_ver" >> "$Env:GITHUB_ENV"
-          echo "arc_name=${{ env.branch_name }}-$_ver.7z" >> "$Env:GITHUB_ENV"
-          pip install -r requirements.txt
+    - name: Install python dependencies
+      run: pip install -r requirements.txt
     - name: Checkout Precompiled Dependencies
       working-directory: ${{ env.lib_dir }}
       run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
