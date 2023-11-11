@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@main
       with:
         path: ${{ env.lib_dir }}
-        key: ${{ runner.os }}--${{ env.tag_name }}
+        key: ${{ runner.os }}_${{ env.tag_name }}
     - name: Install python dependencies
       run: pip install -r requirements.txt
     - name: Checkout Precompiled Dependencies
@@ -53,7 +53,6 @@ jobs:
         path: ${{ github.workspace }}/${{ env.arc_name }}
 
     - name: Create Blender Release
-      if: false
       working-directory: ${{ env.build_dir }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
