@@ -6,41 +6,65 @@ env:
   blender_build: C:\blender-build
   clone_path: goo-engine
   tag_name: blender-3.6-release
-  arc_name: goo-blender.7z
+
+# For release create
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
 
-    - run: |
+    - name: Set working folder names
+      run: |
         echo "build_dir=${{ env.blender_build }}/${{ env.clone_path }}" >> $Env:GITHUB_ENV
         echo "lib_dir=${{ env.blender_build }}/lib" >> $Env:GITHUB_ENV
 
-    - run: |
+    - name: Create working folders
+      run: |
         mkdir ${{ env.build_dir }}
         mkdir ${{ env.lib_dir }}
 
-    - id: cache-svn-dep
+    - name: Cache Precompiled Dependencies
+      id: cache-svn-dep
       uses: actions/cache@main
       with:
         path: ${{ env.lib_dir }}
         key: ${{ runner.os }}-${{ env.tag_name }}
 
-    - working-directory: ${{ env.blender_build }}
-      run: git clone https://github.com/illusion0001/goo-engine.git -b goo-engine-v3.6-release --depth 1 ${{ env.clone_path }}
-    - working-directory: ${{ env.build_dir }}
-      run: pip install -r requirements.txt
-    - working-directory: ${{ env.lib_dir }}
+    - name: Setup envoriment variables
+      working-directory: ${{ env.blender_build }}
+      run: git clone https://github.com/illusion0001/goo-engine.git -b goo-engine-v3.6-release ${{ env.build_dir }}
+    - name: Setup envoriment variables
+      working-directory: ${{ env.build_dir }}
+      run: |
+          $cmdOutput = Split-Path -Path $pwd -Leaf
+          $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
+          echo "commit_ver=$_ver" >> "$Env:GITHUB_ENV"
+          echo "arc_name=${{ env.tag_name }}-$cmdOutput-$_ver.7z" >> "$Env:GITHUB_ENV"
+          pip install -r requirements.txt
+    - name: Checkout Precompiled Dependencies
+      working-directory: ${{ env.lib_dir }}
       run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
-    - working-directory: ${{ env.build_dir }}
+    - name: Update dependencies
+      working-directory: ${{ env.build_dir }}
       run: ./make.bat update
-    - working-directory: ${{ env.build_dir }}
+    - name: Build Blender
+      working-directory: ${{ env.build_dir }}
       run: ./make.bat
-    - working-directory: ${{ env.blender_build }}
+    - name: Zip Release
+      working-directory: ${{ env.blender_build }}
       run: 7z a -m0=LZMA2 -mx9 ${{ env.blender_build }}/${{ env.arc_name }} ${{ env.blender_build }}/build_windows_x64_vc17_Release/bin/Release
 
-    - uses: actions/upload-artifact@main
+    - name: Upload Artifact
+      uses: actions/upload-artifact@main
+      if: false
       with:
         name: ${{ env.arc_name }}
         path: ${{ env.blender_build }}/${{ env.arc_name }}
+
+    - name: Create Blender Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release create ${{ env.commit_ver }} ${{ env.blender_build }}/${{ env.arc_name }} --target ${{ GITHUB.SHA }} -t ${{ env.commit_ver }}
