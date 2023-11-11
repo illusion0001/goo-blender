@@ -1,6 +1,6 @@
 name: Blender Build (Windows)
 
-on: push
+on: [ push, pull_request, workflow_dispatch ]
 
 env:
   lib_dir: C:\blender-build/lib
@@ -27,6 +27,10 @@ jobs:
         $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
         echo "commit_ver=${{ env.branch_name }}-$_ver" >> "$Env:GITHUB_ENV"
         echo "arc_name=${{ env.branch_name }}-$_ver.7z" >> "$Env:GITHUB_ENV"
+    - name: test
+      env:
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+      run: echo ${{ env.BRANCH_NAME }}
     - name: Cache Precompiled Dependencies
       id: cache-svn-dep
       uses: actions/cache@main
