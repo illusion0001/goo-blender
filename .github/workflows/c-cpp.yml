@@ -6,6 +6,7 @@ env:
   blender_build: C:\blender-build
   clone_path: goo-engine
   tag_name: blender-3.6-release
+  branch_name: goo-engine-v3.6-release
 
 # For release create
 permissions:
@@ -35,14 +36,14 @@ jobs:
 
     - name: Setup envoriment variables
       working-directory: ${{ env.blender_build }}
-      run: git clone https://github.com/illusion0001/goo-engine.git -b goo-engine-v3.6-release ${{ env.build_dir }}
+      run: git clone https://github.com/illusion0001/goo-engine.git -b ${{ env.branch_name }} ${{ env.build_dir }}
     - name: Setup envoriment variables
       working-directory: ${{ env.build_dir }}
       run: |
           $cmdOutput = Split-Path -Path $pwd -Leaf
           $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
-          echo "commit_ver=$_ver" >> "$Env:GITHUB_ENV"
-          echo "arc_name=${{ env.tag_name }}-$cmdOutput-$_ver.7z" >> "$Env:GITHUB_ENV"
+          echo "commit_ver=${{ env.branch_name }}-$_ver" >> "$Env:GITHUB_ENV"
+          echo "arc_name=${{ env.branch_name }}-$_ver.7z" >> "$Env:GITHUB_ENV"
           pip install -r requirements.txt
     - name: Checkout Precompiled Dependencies
       working-directory: ${{ env.lib_dir }}
