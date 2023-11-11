@@ -36,14 +36,13 @@ jobs:
     - name: Install python dependencies
       run: pip install -r requirements.txt
     - name: Checkout Precompiled Dependencies
+      if: false
       working-directory: ${{ env.lib_dir }}
       run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
     - name: Update dependencies
       run: ./make.bat update
     - name: Build Blender
       run: ./make.bat
-    - name: List Files
-      run: ls -R ..
     - name: Zip Release
       run: 7z a -m0=LZMA2 -mx9 ${{ github.workspace }}/${{ env.arc_name }} ../build_windows_x64_vc17_Release/bin/Release
 
@@ -55,6 +54,7 @@ jobs:
         path: ${{ github.workspace }}/${{ env.arc_name }}
 
     - name: Create Blender Release
+      if: false
       working-directory: ${{ env.build_dir }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
