@@ -23,7 +23,7 @@ jobs:
     - name: Create working folders
       run: |
         mkdir ${{ env.lib_dir }}
-        mklink /d ../lib ${{ env.lib_dir }}
+        New-Item -ItemType SymbolicLink -Path "../lib" -Target "${{ env.lib_dir }}"
     - name: Cache Precompiled Dependencies
       id: cache-svn-dep
       uses: actions/cache@main
