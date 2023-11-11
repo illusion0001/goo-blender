@@ -18,6 +18,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
+      with:
+        fetch-depth: 0
     - name: Set working folder names
       run: echo "lib_dir=${{ env.blender_build }}/lib" >> $Env:GITHUB_ENV
     - name: Create working folders
@@ -47,17 +49,17 @@ jobs:
     - name: List Files
       run: ls -R ..
     - name: Zip Release
-      run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_name }} ../build_windows_x64_vc17_Release/bin/Release
+      run: 7z a -m0=LZMA2 -mx9 ${{ github.workspace }}/${{ env.arc_name }} ../build_windows_x64_vc17_Release/bin/Release
 
     - name: Upload Artifact
       uses: actions/upload-artifact@main
       if: false
       with:
         name: ${{ env.arc_name }}
-        path: ${{ env.blender_build }}/${{ env.arc_name }}
+        path: ${{ github.workspace }}/${{ env.arc_name }}
 
     - name: Create Blender Release
       working-directory: ${{ env.build_dir }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh release create "${{ env.commit_ver }}" ${{ env.blender_build }}/${{ env.arc_name }} --target ${{ GITHUB.SHA }} -t "${{ env.commit_ver }}"
+      run: gh release create "${{ env.commit_ver }}" ${{ github.workspace }}/${{ env.arc_name }} --target ${{ GITHUB.SHA }} -t "${{ env.commit_ver }}"
