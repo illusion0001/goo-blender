@@ -36,7 +36,6 @@ jobs:
     - name: Install python dependencies
       run: pip install -r requirements.txt
     - name: Checkout Precompiled Dependencies
-      if: false
       working-directory: ${{ env.lib_dir }}
       run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
     - name: Update dependencies
