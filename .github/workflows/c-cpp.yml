@@ -66,6 +66,7 @@ jobs:
         path: ${{ env.blender_build }}/${{ env.arc_name }}
 
     - name: Create Blender Release
+      working-directory: ${{ env.build_dir }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: gh release create ${{ env.commit_ver }} ${{ env.blender_build }}/${{ env.arc_name }} --target ${{ GITHUB.SHA }} -t ${{ env.commit_ver }}
