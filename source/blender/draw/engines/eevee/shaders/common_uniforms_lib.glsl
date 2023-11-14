@@ -49,6 +49,28 @@ layout(std140) uniform common_block
   /* Misc */
   vec4 cameraUvScaleBias;
   vec4 planarClipPlane;
+  /* SSGI */
+  float ssrDiffuseVersioning;
+  float ssrDiffuseIntensity; /*trace*/
+  float ssrDiffuseThickness;
+  float ssrDiffuseResolveBias;
+  float ssrDiffuseQuality;
+  float ssrDiffuseClamp;
+  float ssrDiffuseAo;
+  float ssrDiffuseAoLimit;
+  int ssrDiffuseProbeTrace; /*probe*/
+  float ssrDiffuseProbeIntensity;
+  float ssrDiffuseProbeClamp;
+  float ssrDiffuseFilter; /*filter*/
+  float ssrDiffuseFsize;
+  int ssrDiffuseFsamples;
+  float ssrDiffuseFnweight;
+  float ssrDiffuseFdweight;
+  float ssrDiffuseFaoweight;
+  float ssrDiffuseDebugA; /*debug*/
+  float ssrDiffuseDebugB;
+  float ssrDiffuseDebugC;
+  float ssrDiffuseDebugD;
 };
 
 #endif /* !USE_GPU_SHADER_CREATE_INFO */

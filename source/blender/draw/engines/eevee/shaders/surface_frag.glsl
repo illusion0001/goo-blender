@@ -102,6 +102,7 @@ void main()
   outRadiance = vec4(cl.radiance, holdout);
   ssrNormals = normal_encode(normalize(mat3(ViewMatrix) * out_ssr_N), vec3(0.0));
   ssrData = vec4(out_ssr_color, out_ssr_roughness);
+  ssgiInput = cl.ssgimix;
   sssIrradiance = out_sss_radiance;
   sssRadius = out_sss_radius;
   sssAlbedo = out_sss_color;
@@ -125,6 +126,7 @@ void main()
   outRadiance.rgb *= alpha_div;
   ssrData.rgb *= alpha_div;
   sssAlbedo.rgb *= alpha_div;
+  ssgiInput.rgb *= alpha_div;
 
   if (renderPassAOV) {
     if (aov_is_valid) {

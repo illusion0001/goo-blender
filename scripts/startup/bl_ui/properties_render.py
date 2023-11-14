@@ -405,7 +405,7 @@ class RENDER_PT_eevee_subsurface_scattering(RenderButtonsPanel, Panel):
 
 
 class RENDER_PT_eevee_screen_space_reflections(RenderButtonsPanel, Panel):
-    bl_label = "Screen Space Reflections"
+    bl_label = "Screen Space Ray Tracing 1.17a"
     bl_options = {'DEFAULT_CLOSED'}
     COMPAT_ENGINES = {'BLENDER_EEVEE'}
 
@@ -428,13 +428,82 @@ class RENDER_PT_eevee_screen_space_reflections(RenderButtonsPanel, Panel):
         col = layout.column()
         col.active = props.use_ssr
         col.prop(props, "use_ssr_refraction", text="Refraction")
-        col.prop(props, "use_ssr_halfres")
+        #col.prop(props, "use_ssr_halfres")
+        col.prop(props, "ssr_border_fade")
+
+        col.label(text="Reflections:", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+
         col.prop(props, "ssr_quality")
         col.prop(props, "ssr_max_roughness")
         col.prop(props, "ssr_thickness")
-        col.prop(props, "ssr_border_fade")
         col.prop(props, "ssr_firefly_fac")
 
+        col.label(text="Diffuse:", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+        col.prop(props, "ssr_diffuse_intensity")
+        col.prop(props, "ssr_diffuse_thickness")
+        col.prop(props, "ssr_diffuse_ao_limit")
+        col.prop(props, "ssr_diffuse_probe_trace")
+        col.prop(props, "ssr_diffuse_probe_intensity")
+
+        col.label(text="Denoiser:", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+        col.prop(props, "ssr_diffuse_filter")
+        col.prop(props, "ssr_diffuse_fsamples")
+        col.prop(props, "ssr_diffuse_fsize")
+
+
+class RENDER_PT_eevee_screen_space_reflections_extra(RenderButtonsPanel, Panel):
+    bl_label = "Advanced Settings"
+    bl_parent_id = "RENDER_PT_eevee_screen_space_reflections"
+    bl_options = {'DEFAULT_CLOSED'}
+    COMPAT_ENGINES = {'BLENDER_EEVEE'}
+
+    @classmethod
+    def poll(cls, context):
+        return (context.engine in cls.COMPAT_ENGINES)
+
+    def draw_header(self, context):
+        scene = context.scene
+        props = scene.eevee
+
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+
+        scene = context.scene
+        props = scene.eevee
+
+        col = layout.column()
+
+        col.label(text="Diffuse:", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+        col.prop(props, "ssr_diffuse_intensity")
+        col.prop(props, "ssr_diffuse_quality")
+        col.prop(props, "ssr_diffuse_thickness")
+        col.prop(props, "ssr_diffuse_resolve_bias")
+        col.prop(props, "ssr_diffuse_clamp")
+        col.prop(props, "ssr_diffuse_ao")
+        col.prop(props, "ssr_diffuse_ao_limit")
+
+        col.label(text="Probe Tracing(WIP):", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+        col.prop(props, "ssr_diffuse_probe_trace")
+        col.prop(props, "ssr_diffuse_probe_intensity")
+        col.prop(props, "ssr_diffuse_probe_clamp")
+
+        col.label(text="Denoiser:", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+        col.prop(props, "ssr_diffuse_filter")
+        col.prop(props, "ssr_diffuse_fsamples")
+        col.prop(props, "ssr_diffuse_fsize")
+        col.prop(props, "ssr_diffuse_fnweight")
+        col.prop(props, "ssr_diffuse_fdweight")
+        col.prop(props, "ssr_diffuse_faoweight")
+
+        # col.label(text="Debug:", text_ctxt="", translate=False, icon='NONE', icon_value=0)
+        # col.prop(props, "ssr_diffuse_debug_a")
+        # col.prop(props, "ssr_diffuse_debug_b")
+        # col.prop(props, "ssr_diffuse_debug_c")
+        # col.prop(props, "ssr_diffuse_debug_d")
+        
+        #col.prop(props, "ssr_diffuse_versioning")
+        
 
 class RENDER_PT_eevee_shadows(RenderButtonsPanel, Panel):
     bl_label = "Shadows"
@@ -893,6 +962,7 @@ classes = (
     RENDER_PT_eevee_next_depth_of_field,
     RENDER_PT_eevee_subsurface_scattering,
     RENDER_PT_eevee_screen_space_reflections,
+    RENDER_PT_eevee_screen_space_reflections_extra,
     RENDER_PT_eevee_motion_blur,
     RENDER_PT_eevee_next_motion_blur,
     RENDER_PT_motion_blur_curve,

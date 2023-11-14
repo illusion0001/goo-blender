@@ -197,7 +197,8 @@ GPU_SHADER_CREATE_INFO(eevee_legacy_material_surface_frag_opaque)
     .fragment_out(2, Type::VEC4, "ssrData")
     .fragment_out(3, Type::VEC3, "sssIrradiance")
     .fragment_out(4, Type::FLOAT, "sssRadius")
-    .fragment_out(5, Type::VEC3, "sssAlbedo");
+    .fragment_out(5, Type::VEC3, "sssAlbedo")
+    .fragment_out(6, Type::VEC4, "ssgiInput");
 
 GPU_SHADER_CREATE_INFO(eevee_legacy_material_surface_frag_alpha_blend)
     .define("USE_ALPHA_BLEND")

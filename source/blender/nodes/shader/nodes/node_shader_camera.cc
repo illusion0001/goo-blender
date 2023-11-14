@@ -14,6 +14,7 @@ static void node_declare(NodeDeclarationBuilder &b)
   b.add_output<decl::Vector>("View Vector");
   b.add_output<decl::Float>("View Z Depth");
   b.add_output<decl::Float>("View Distance");
+  //b.add_output<decl::Float>("Alpha Difference");
 }
 
 static int gpu_shader_camera(GPUMaterial *mat,

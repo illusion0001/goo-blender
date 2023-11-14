@@ -21,6 +21,9 @@ float out_ssr_roughness;
 vec3 out_ssr_color;
 vec3 out_ssr_N;
 
+vec3 out_ssgi_color;
+float out_ssgi_data;
+
 bool aov_is_valid = false;
 vec3 out_aov;
 
@@ -83,6 +86,10 @@ Closure closure_eval(ClosureDiffuse diffuse)
   if (!output_sss(diffuse, out_Diffuse_0)) {
     closure.radiance += out_Diffuse_0.radiance * diffuse.color * diffuse.weight;
   }
+  /* ssgi */
+  out_ssgi_color = diffuse.color * diffuse.weight;
+  out_ssgi_data = out_Diffuse_0.AO * diffuse.weight;
+  closure.ssgimix = vec4(out_ssgi_color, out_ssgi_data);
   return closure;
 }
 
@@ -98,6 +105,10 @@ Closure closure_eval(ClosureTranslucent translucent)
 
   Closure closure = CLOSURE_DEFAULT;
   closure.radiance += out_Translucent_0.radiance * translucent.color * translucent.weight;
+  /* ssgi */
+  out_ssgi_color = translucent.color * translucent.weight;
+  out_ssgi_data = out_Translucent_0.AO;
+  closure.ssgimix = vec4(out_ssgi_color, out_ssgi_data);
   return closure;
 }
 
@@ -158,6 +169,10 @@ Closure closure_eval(ClosureTransparency transparency)
   Closure closure = CLOSURE_DEFAULT;
   closure.transmittance += transparency.transmittance * transparency.weight;
   closure.holdout += transparency.holdout * transparency.weight;
+    /* ssgi */
+  out_ssgi_color = vec3(0.0);
+  out_ssgi_data = 0.0;
+  closure.ssgimix = vec4(out_ssgi_color, out_ssgi_data);
   return closure;
 }
 
@@ -221,6 +236,10 @@ Closure closure_eval(ClosureDiffuse diffuse, ClosureReflection reflection)
   if (!output_ssr(reflection)) {
     closure.radiance += out_Glossy_1.radiance * reflection.color * reflection.weight;
   }
+  /* ssgi */
+  out_ssgi_color = diffuse.color * diffuse.weight;
+  out_ssgi_data = out_Diffuse_0.AO * diffuse.weight;
+  closure.ssgimix = vec4(out_ssgi_color, out_ssgi_data);
   return closure;
 #endif
 }
@@ -260,6 +279,10 @@ Closure closure_eval(ClosureDiffuse diffuse,
   if (!output_ssr(reflection)) {
     closure.radiance += out_Glossy_1.radiance * reflection.color * reflection.weight;
   }
+  /* ssgi */
+  out_ssgi_color = diffuse.color * diffuse.weight;
+  out_ssgi_data = out_Diffuse_0.AO * diffuse.weight;
+  closure.ssgimix = vec4(out_ssgi_color, out_ssgi_data);
   return closure;
 #endif
 }
@@ -304,6 +327,10 @@ Closure closure_eval(ClosureDiffuse diffuse,
   if (!output_ssr(reflection)) {
     closure.radiance += out_Glossy_1.radiance * reflection.color * reflection.weight;
   }
+  /* ssgi */
+  out_ssgi_color = diffuse.color * diffuse.weight;
+  out_ssgi_data = out_Diffuse_0.AO * diffuse.weight;
+  closure.ssgimix = vec4(out_ssgi_color, out_ssgi_data);
   return closure;
 #endif
 }
@@ -369,6 +396,8 @@ Closure closure_add(inout Closure cl1, inout Closure cl2)
   cl.radiance = cl1.radiance + cl2.radiance;
   cl.transmittance = cl1.transmittance + cl2.transmittance;
   cl.holdout = cl1.holdout + cl2.holdout;
+  /* mix ssgi */
+  cl.ssgimix = cl1.ssgimix + cl2.ssgimix;
   /* Make sure each closure is only added once to the result. */
   cl1 = CLOSURE_DEFAULT;
   cl2 = CLOSURE_DEFAULT;

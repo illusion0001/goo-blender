@@ -478,3 +478,18 @@ float ambient_occlusion_eval(vec3 normal,
   return 1.0;
 #endif
 }
+/* temp dirty read for maxzBuffer */ 
+float ambient_occlusion_depth()
+{
+#if defined(GPU_FRAGMENT_SHADER) && (defined(MESH_SHADER) || defined(HAIR_SHADER)) && !defined(DEPTH_SHADER) && !defined(VOLUMETRICS)
+
+  float depth = 0.0;
+  vec2 uv = get_uvs_from_view(viewPosition);
+  float zbuffer = textureLod(maxzBuffer, uv * hizUvScale.xy, 0).r; // lod 0
+  depth = -get_view_z_from_depth(zbuffer);
+
+  return depth;
+#else
+  return 1.0;
+#endif
+}

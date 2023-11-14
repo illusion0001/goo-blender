@@ -15,6 +15,7 @@ struct Closure {
   vec3 radiance;
   vec3 transmittance;
   float holdout;
+  vec4 ssgimix;
 #endif
 
 /* Metal Default Constructor - Required for C++ constructor syntax. */
@@ -31,8 +32,8 @@ struct Closure {
   }
 #  else
   /* Explicit Closure constructors -- To support GLSL syntax */
-  inline Closure(vec3 in_radiance, vec3 in_transmittance, float in_holdout)
-      : radiance(in_radiance), transmittance(in_transmittance), holdout(in_holdout)
+  inline Closure(vec3 in_radiance, vec3 in_transmittance, float in_holdout, vec4 in_ssgimix)
+      : radiance(in_radiance), transmittance(in_transmittance), holdout(in_holdout), test(in_ssgimix)
   {
   }
 #  endif /* VOLUMETRICS */
@@ -88,6 +89,7 @@ float ambient_occlusion_eval(vec3 normal,
                              const float inverted,
                              const float sample_count);
 
+float ambient_occlusion_depth();
 /* WORKAROUND: Included later with libs. This is because we are mixing include systems. */
 vec3 safe_normalize(vec3 N);
 float fast_sqrt(float a);
@@ -102,5 +104,5 @@ float F_eta(float a, float b);
 #ifdef VOLUMETRICS
 #  define CLOSURE_DEFAULT Closure(vec3(0), vec3(0), vec3(0), 0.0)
 #else
-#  define CLOSURE_DEFAULT Closure(vec3(0), vec3(0), 0.0)
+#  define CLOSURE_DEFAULT Closure(vec3(0), vec3(0), 0.0, vec4(0.0)) //ssgimix
 #endif

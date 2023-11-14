@@ -206,6 +206,7 @@ float ambient_occlusion_eval(vec3 normal,
   /* TODO */
   return 1.0;
 }
+/* TODO correct zbuffer out func */
 
 #ifndef GPU_METAL
 void attrib_load();

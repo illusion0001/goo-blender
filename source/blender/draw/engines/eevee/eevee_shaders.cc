@@ -116,6 +116,10 @@ static struct {
   struct GPUShader *reflection_resolve;
   struct GPUShader *reflection_resolve_probe;
   struct GPUShader *reflection_resolve_raytrace;
+  struct GPUShader *ssgi_trace;
+  struct GPUShader *ssgi_resolve;
+  struct GPUShader *ssgi_filter;
+  struct GPUShader *ssgi_filter_sec;
 
   /* Shadows */
   struct GPUShader *shadow_sh;
@@ -168,6 +172,7 @@ extern "C" char datatoc_common_math_lib_glsl[];
 extern "C" char datatoc_common_math_geom_lib_glsl[];
 extern "C" char datatoc_common_view_lib_glsl[];
 extern "C" char datatoc_gpu_shader_codegen_lib_glsl[];
+extern "C" char datatoc_common_colorpacking_lib_glsl[];
 
 extern "C" char datatoc_ambient_occlusion_lib_glsl[];
 extern "C" char datatoc_bsdf_common_lib_glsl[];
@@ -215,6 +220,7 @@ static void eevee_shader_library_ensure()
     DRW_SHADER_LIB_ADD_SHARED(e_data.lib, engine_eevee_legacy_shared);
     DRW_SHADER_LIB_ADD(e_data.lib, common_math_lib);
     DRW_SHADER_LIB_ADD(e_data.lib, common_math_geom_lib);
+    DRW_SHADER_LIB_ADD(e_data.lib, common_colorpacking_lib);
     DRW_SHADER_LIB_ADD(e_data.lib, common_hair_lib);
     DRW_SHADER_LIB_ADD(e_data.lib, common_view_lib);
     DRW_SHADER_LIB_ADD(e_data.lib, common_uniforms_lib);
@@ -661,6 +667,15 @@ struct GPUShader *EEVEE_shaders_effect_reflection_trace_sh_get(void)
   return e_data.reflection_trace;
 }
 
+struct GPUShader *EEVEE_shaders_effect_ssgi_trace_sh_get(void)
+{
+  if (e_data.ssgi_trace == nullptr) {
+    e_data.ssgi_trace = DRW_shader_create_from_info_name(
+        "eevee_legacy_effect_ssgi_trace");
+  }
+  return e_data.ssgi_trace;
+}
+
 struct GPUShader *EEVEE_shaders_effect_reflection_resolve_sh_get(void)
 {
   if (e_data.reflection_resolve == nullptr) {
@@ -668,6 +683,33 @@ struct GPUShader *EEVEE_shaders_effect_reflection_resolve_sh_get(void)
         "eevee_legacy_effect_reflection_resolve");
   }
   return e_data.reflection_resolve;
+}
+
+struct GPUShader *EEVEE_shaders_effect_ssgi_resolve_sh_get(void)
+{
+  if (e_data.ssgi_resolve == nullptr) {
+    e_data.ssgi_resolve = DRW_shader_create_from_info_name(
+        "eevee_legacy_effect_ssgi_resolve");
+  }
+  return e_data.ssgi_resolve;
+}
+
+struct GPUShader *EEVEE_shaders_effect_ssgi_filter_sh_get(void)
+{
+  if (e_data.ssgi_filter == nullptr) {
+    e_data.ssgi_filter = DRW_shader_create_from_info_name(
+        "eevee_legacy_effect_ssgi_filter");
+  }
+  return e_data.ssgi_filter;
+}
+
+struct GPUShader *EEVEE_shaders_effect_ssgi_filter_sec_sh_get(void)
+{
+  if (e_data.ssgi_filter_sec == nullptr) {
+    e_data.ssgi_filter_sec = DRW_shader_create_from_info_name(
+        "eevee_legacy_effect_ssgi_filter_sec");
+  }
+  return e_data.ssgi_filter_sec;
 }
 
 struct GPUShader *EEVEE_shaders_effect_reflection_resolve_probe_sh_get(void)
@@ -1534,7 +1576,11 @@ void EEVEE_shaders_free(void)
     DRW_SHADER_FREE_SAFE(e_data.bloom_resolve_sh[i]);
   }
   DRW_SHADER_FREE_SAFE(e_data.reflection_trace);
+  DRW_SHADER_FREE_SAFE(e_data.ssgi_trace);
   DRW_SHADER_FREE_SAFE(e_data.reflection_resolve);
+  DRW_SHADER_FREE_SAFE(e_data.ssgi_resolve);
+  DRW_SHADER_FREE_SAFE(e_data.ssgi_filter);
+  DRW_SHADER_FREE_SAFE(e_data.ssgi_filter_sec);
   DRW_SHADER_FREE_SAFE(e_data.reflection_resolve_probe);
   DRW_SHADER_FREE_SAFE(e_data.reflection_resolve_raytrace);
   DRW_SHADER_LIB_FREE_SAFE(e_data.lib);
