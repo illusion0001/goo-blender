@@ -908,7 +908,7 @@ typedef struct EEVEE_CommonUniformBuffer {
   float ssr_diffuse_debug_b;                          /* float */
   float ssr_diffuse_debug_c;                          /* float */ //
   float ssr_diffuse_debug_d;                          /* float */
-  float pad[3];
+  float pad[2];
 } EEVEE_CommonUniformBuffer;
 
 BLI_STATIC_ASSERT_ALIGN(EEVEE_CommonUniformBuffer, 16)
