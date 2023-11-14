@@ -473,7 +473,7 @@ void EEVEE_renderpasses_draw_debug(EEVEE_Data *vedata)
       tx = txl->maxzbuffer;
       break;
     case 2:
-      /* UNUSED */
+      tx = effects->ssgi_input;
       break;
     case 3:
       tx = effects->ssr_normal_input;

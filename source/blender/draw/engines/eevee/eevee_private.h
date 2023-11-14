@@ -245,6 +245,10 @@ typedef struct EEVEE_PassList {
   struct DRWPass *ssr_resolve;
   struct DRWPass *ssr_resolve_probe;
   struct DRWPass *ssr_resolve_refl;
+  struct DRWPass *ssgi_raytrace;
+  struct DRWPass *ssgi_resolve;
+  struct DRWPass *ssgi_filter;
+  struct DRWPass *ssgi_filter_sec;
   struct DRWPass *sss_blur_ps;
   struct DRWPass *sss_resolve_ps;
   struct DRWPass *sss_translucency_ps;
@@ -710,6 +714,12 @@ typedef struct EEVEE_EffectsInfo {
   struct GPUTexture *ssr_specrough_input;
   struct GPUTexture *ssr_hit_output;
   struct GPUTexture *ssr_hit_depth;
+  /* SSGI (shares ssr data) */
+  struct GPUTexture *ssgi_input;
+  struct GPUTexture *ssgi_hit_output; //trace
+  struct GPUTexture *ssgi_hit_depth; //trace
+  struct GPUTexture *ssgi_filter_input;  //filter a
+  struct GPUTexture *ssgi_filter_sec_input; //filter b
   /* Intel devices require a split execution due to shader issue */
   bool use_split_ssr_pass;
 
@@ -876,6 +886,28 @@ typedef struct EEVEE_CommonUniformBuffer {
   float camera_uv_scale[2], camera_uv_bias[2]; /* vec4 */
   float planar_clip_plane[4];                  /* vec4 */
   int shadow_id_high_bitdepth;
+  /* SSGI */
+  float ssr_diffuse_versioning;                       /* float */
+  float ssr_diffuse_intensity;                        /* float */
+  float ssr_diffuse_thickness;                        /* float */
+  float ssr_diffuse_resolve_bias;                     /* float */ //
+  float ssr_diffuse_quality;                          /* float */
+  float ssr_diffuse_clamp;                            /* float */
+  float ssr_diffuse_ao;                               /* float */
+  float ssr_diffuse_ao_limit;                         /* float */ //
+  int ssr_diffuse_probe_trace;                        /* int */
+  float ssr_diffuse_probe_intensity;                  /* float */
+  float ssr_diffuse_probe_clamp;                      /* float */
+  float ssr_diffuse_filter;                           /* float */ //
+  float ssr_diffuse_fsize;                            /* float */
+  int ssr_diffuse_fsamples;                           /* int */
+  float ssr_diffuse_fnweight;                         /* float */
+  float ssr_diffuse_fdweight;                         /* float */ //
+  float ssr_diffuse_faoweight;                        /* float */
+  float ssr_diffuse_debug_a;                          /* float */
+  float ssr_diffuse_debug_b;                          /* float */
+  float ssr_diffuse_debug_c;                          /* float */ //
+  float ssr_diffuse_debug_d;                          /* float */
   float pad[3];
 } EEVEE_CommonUniformBuffer;
 
@@ -1230,6 +1262,10 @@ struct GPUShader *EEVEE_shaders_effect_reflection_trace_sh_get(void);
 struct GPUShader *EEVEE_shaders_effect_reflection_resolve_sh_get(void);
 struct GPUShader *EEVEE_shaders_effect_reflection_resolve_probe_sh_get(void);
 struct GPUShader *EEVEE_shaders_effect_reflection_resolve_refl_sh_get(void);
+struct GPUShader *EEVEE_shaders_effect_ssgi_trace_sh_get(void);
+struct GPUShader *EEVEE_shaders_effect_ssgi_resolve_sh_get(void);
+struct GPUShader *EEVEE_shaders_effect_ssgi_filter_sh_get(void);
+struct GPUShader *EEVEE_shaders_effect_ssgi_filter_sec_sh_get(void);
 struct GPUShader *EEVEE_shaders_renderpasses_accumulate_sh_get(void);
 struct GPUShader *EEVEE_shaders_renderpasses_post_process_sh_get(void);
 struct GPUShader *EEVEE_shaders_cryptomatte_sh_get(bool is_hair);

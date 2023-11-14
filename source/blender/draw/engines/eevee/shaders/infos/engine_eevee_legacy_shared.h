@@ -68,6 +68,28 @@ struct CommonUniformBlock {
   float _alphaHashScale;
   vec4 _cameraUvScaleBias;
   vec4 _planarClipPlane;
+  /*SSGI*/
+  float _ssrDiffuseVersioning;
+  float _ssrDiffuseIntensity;
+  float _ssrDiffuseThickness;
+  float _ssrDiffuseResolveBias;
+  float _ssrDiffuseQuality;
+  float _ssrDiffuseClamp;
+  float _ssrDiffuseAo;
+  float _ssrDiffuseAoLimit;
+  int _ssrDiffuseProbeTrace;
+  float _ssrDiffuseProbeIntensity;
+  float _ssrDiffuseProbeClamp;
+  float _ssrDiffuseFilter;
+  float _ssrDiffuseFsize;
+  int _ssrDiffuseFsamples;
+  float _ssrDiffuseFnweight;
+  float _ssrDiffuseFdweight;
+  float _ssrDiffuseFaoweight;
+  float _ssrDiffuseDebugA;
+  float _ssrDiffuseDebugB;
+  float _ssrDiffuseDebugC;
+  float _ssrDiffuseDebugD;
 };
 BLI_STATIC_ASSERT_ALIGN(CommonUniformBlock, 16)
 
@@ -234,6 +256,27 @@ BLI_STATIC_ASSERT_ALIGN(SSSProfileBlock, 16)
 #    define lightGroups light_groups
 #    define lightGroupShadows light_group_shadows
 */
+#    define ssrDiffuseVersioning common_block._ssrDiffuseVersioning
+#    define ssrDiffuseIntensity common_block._ssrDiffuseIntensity
+#    define ssrDiffuseThickness common_block._ssrDiffuseThickness
+#    define ssrDiffuseResolveBias common_block._ssrDiffuseResolveBias
+#    define ssrDiffuseQuality common_block._ssrDiffuseQuality
+#    define ssrDiffuseClamp common_block._ssrDiffuseClamp
+#    define ssrDiffuseAo common_block._ssrDiffuseAo
+#    define ssrDiffuseAoLimit common_block._ssrDiffuseAoLimit
+#    define ssrDiffuseProbeTrace common_block._ssrDiffuseProbeTrace
+#    define ssrDiffuseProbeIntensity common_block._ssrDiffuseProbeIntensity
+#    define ssrDiffuseProbeClamp common_block._ssrDiffuseProbeClamp
+#    define ssrDiffuseFilter common_block._ssrDiffuseFilter
+#    define ssrDiffuseFsize common_block._ssrDiffuseFsize
+#    define ssrDiffuseFsamples common_block._ssrDiffuseFsamples
+#    define ssrDiffuseFnweight common_block._ssrDiffuseFnweight
+#    define ssrDiffuseFdweight common_block._ssrDiffuseFdweight
+#    define ssrDiffuseFaoweight common_block._ssrDiffuseFaoweight
+#    define ssrDiffuseDebugA common_block._ssrDiffuseDebugA
+#    define ssrDiffuseDebugB common_block._ssrDiffuseDebugB
+#    define ssrDiffuseDebugC common_block._ssrDiffuseDebugC
+#    define ssrDiffuseDebugD common_block._ssrDiffuseDebugD
 
 /* ProbeBlock */
 #    define probes_data probe_block._probes_data

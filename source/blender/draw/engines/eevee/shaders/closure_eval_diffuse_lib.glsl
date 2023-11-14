@@ -3,6 +3,7 @@
 #pragma BLENDER_REQUIRE(ambient_occlusion_lib.glsl)
 #pragma BLENDER_REQUIRE(closure_eval_lib.glsl)
 #pragma BLENDER_REQUIRE(renderpass_lib.glsl)
+#pragma BLENDER_REQUIRE(bsdf_common_lib.glsl)
 
 struct ClosureInputDiffuse {
   vec3 N;      /** Shading normal. */
@@ -33,6 +34,7 @@ ClosureEvalDiffuse closure_Diffuse_eval_init(inout ClosureInputDiffuse cl_in,
                                              ClosureEvalCommon cl_common,
                                              out ClosureOutputDiffuse cl_out)
 {
+  cl_in.N = ensure_valid_specular_reflection(cl_common.Ng, cl_common.V, cl_in.N);
   cl_in.N = safe_normalize(cl_in.N);
   cl_out.radiance = vec3(0.0);
 
@@ -77,12 +79,14 @@ void closure_Diffuse_indirect_end(ClosureInputDiffuse cl_in,
 {
   /* If not enough light has been accumulated from probes, use the world specular cubemap
    * to fill the remaining energy needed. */
-  if (cl_common.diffuse_accum > 0.0) {
+  if (cl_common.diffuse_accum > 0.0 && ssrDiffuseProbeTrace < 1) {
     vec3 probe_radiance = probe_evaluate_world_diff(cl_eval.probe_sampling_dir);
     cl_out.radiance += cl_common.diffuse_accum * probe_radiance;
   }
   /* Apply occlusion on radiance before the light loop. */
-  cl_out.radiance *= cl_eval.ambient_occlusion;
+  float ao_transfer = 1.0 * cl_eval.ambient_occlusion;
+  cl_out.radiance *= ao_transfer;
+  cl_out.AO = ao_transfer; /* AO out for SSGI */
 }
 
 void closure_Diffuse_eval_end(ClosureInputDiffuse cl_in,

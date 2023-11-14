@@ -370,6 +370,10 @@ set(GLSL_SRC
   engines/eevee/shaders/effect_reflection_lib.glsl
   engines/eevee/shaders/effect_reflection_resolve_frag.glsl
   engines/eevee/shaders/effect_reflection_trace_frag.glsl
+  engines/eevee/shaders/effect_ssgi_trace_frag.glsl
+  engines/eevee/shaders/effect_ssgi_resolve_frag.glsl
+  engines/eevee/shaders/effect_ssgi_filter_frag.glsl
+  engines/eevee/shaders/effect_ssgi_filter_sec_frag.glsl
   engines/eevee/shaders/effect_downsample_frag.glsl
   engines/eevee/shaders/effect_downsample_cube_frag.glsl
   engines/eevee/shaders/effect_gtao_frag.glsl
@@ -552,6 +556,7 @@ set(GLSL_SRC
   intern/shaders/common_hair_refine_vert.glsl
   intern/shaders/common_intersect_lib.glsl
   intern/shaders/common_math_geom_lib.glsl
+  intern/shaders/common_colorpacking_lib.glsl
   intern/shaders/common_math_lib.glsl
   intern/shaders/common_pointcloud_lib.glsl
   intern/shaders/common_shape_lib.glsl

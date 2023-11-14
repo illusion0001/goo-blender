@@ -2,6 +2,7 @@
 #pragma BLENDER_REQUIRE(common_view_lib.glsl)
 #pragma BLENDER_REQUIRE(common_math_lib.glsl)
 #pragma BLENDER_REQUIRE(common_uniforms_lib.glsl)
+/*TODO Add separate func and backport?*/
 
 /* Fix for #104266 wherein AMD GPUs running Metal erroneously discard a successful hit. */
 #if defined(GPU_METAL) && defined(GPU_ATI)

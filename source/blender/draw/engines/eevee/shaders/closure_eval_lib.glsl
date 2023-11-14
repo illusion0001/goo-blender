@@ -167,10 +167,10 @@
 /* C++ struct initialization. */
 #  define CLOSURE_EVAL_DUMMY \
     { \
-      vec3(0) \
+      vec3(0), float(1.0) \ /* non zero for denoise buffer artifacting dirty fix*/
     }
 #else
-#  define CLOSURE_EVAL_DUMMY ClosureOutput(vec3(0))
+#  define CLOSURE_EVAL_DUMMY ClosureOutput(vec3(0), float(1.0))
 #endif
 #define CLOSURE_INPUT_Dummy_DEFAULT CLOSURE_EVAL_DUMMY
 #define closure_Dummy_eval_init(cl_in, cl_common, cl_out) CLOSURE_EVAL_DUMMY
@@ -237,6 +237,7 @@ struct ClosureEvalCommon {
 /* Common cl_out struct used by most closures. */
 struct ClosureOutput {
   vec3 radiance;
+  float AO;
 };
 
 /* Workaround for screenspace shadows in SSR pass. */
