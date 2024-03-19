@@ -15,7 +15,7 @@
 static void node_combsep_color_init(bNodeTree * /*tree*/, bNode *node)
 {
   NodeCombSepColor *data = MEM_cnew<NodeCombSepColor>(__func__);
-  data->mode = NODE_COMBSEP_COLOR_RGB;
+  data->mode = NODE_COMBSEP_COLOR_HSV;
   node->storage = data;
 }
 
