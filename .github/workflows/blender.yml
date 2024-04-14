@@ -36,7 +36,9 @@ jobs:
         key: ${{ runner.os }}-${{ env.tag_name }}
     - name: Checkout Precompiled Dependencies
       working-directory: ${{ env.lib_dir }}
-      run: svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
+      run: |
+        svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
+        Rename-Item win64_vc15 windows_x64
     - name: Update dependencies
       run: ./make.bat update
     - name: Build Blender
