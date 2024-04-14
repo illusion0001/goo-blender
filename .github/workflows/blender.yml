@@ -30,12 +30,6 @@ jobs:
         echo "commit_ver=$_name" >> "$Env:GITHUB_ENV"
         echo "arc_name=$_name.7z" >> "$Env:GITHUB_ENV"
         echo "arc_path=${{ github.workspace }}/$_name.7z" >> "$Env:GITHUB_ENV"
-    - name: Cache Precompiled Dependencies
-      id: cache-svn-dep
-      uses: actions/cache@main
-      with:
-        path: ${{ env.lib_dir }}
-        key: ${{ runner.os }}-${{ env.tag_name }}
     - name: Update dependencies
       run: ./make.bat update
     - name: Build Blender
