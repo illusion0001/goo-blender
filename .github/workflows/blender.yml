@@ -32,14 +32,10 @@ jobs:
         echo "arc_path=${{ github.workspace }}/$_name.7z" >> "$Env:GITHUB_ENV"
     - name: Update dependencies
       run: ./make.bat update
+    - run: ls -R ${{ env.lib_dir }}
     - name: Build Blender
       run: ./make.bat
-    - name: List Files
-      run: ls -R ..
-    - name: List Files (root)
-      run: ls -R
     - name: Zip Release
-      if: false
       run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_path }} ../build_windows_x64_vc17_Release/bin/Release
 
     - name: Upload Artifact
@@ -50,7 +46,6 @@ jobs:
         path: ${{ env.arc_path }}
 
     - name: Create Blender Release
-      if: false
       working-directory: ${{ env.build_dir }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
