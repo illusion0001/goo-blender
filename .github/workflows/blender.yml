@@ -21,7 +21,7 @@ jobs:
     - name: Create working folders
       run: |
         mkdir ${{ env.lib_dir }}
-        New-Item -ItemType SymbolicLink -Path "../lib" -Target "${{ env.lib_dir }}"
+        New-Item -ItemType SymbolicLink -Path "lib/windows_x64" -Target "${{ env.lib_dir }}"
         $cmdOutput = Split-Path -Path $pwd -Leaf
         $_ver = "$(git rev-list HEAD --count)-$(git rev-parse --short=8 HEAD)"
         $_name = "$cmdOutput-${{ env.branch_name }}-$_ver"
@@ -34,11 +34,6 @@ jobs:
       with:
         path: ${{ env.lib_dir }}
         key: ${{ runner.os }}-${{ env.tag_name }}
-    - name: Checkout Precompiled Dependencies
-      working-directory: ${{ env.lib_dir }}
-      run: |
-        svn checkout https://svn.blender.org/svnroot/bf-blender/tags/${{ env.tag_name }}/lib/win64_vc15
-        Rename-Item win64_vc15 windows_x64
     - name: Update dependencies
       run: ./make.bat update
     - name: Build Blender
