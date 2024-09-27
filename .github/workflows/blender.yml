@@ -27,9 +27,11 @@ jobs:
     - name: Update dependencies
       run: ./make.bat update
     - name: Build Blender
-      run: ./make.bat
+      run: |
+        ./make.bat
+        Copy-Item "..\build_windows_x64_vc17_RelWithDebInfo\source\creator\RelWithDebInfo\blender_private.pdb" "..\build_windows_x64_vc17_RelWithDebInfo\bin\RelWithDebInfo\blender.pdb"
     - name: Zip Release
-      run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_path }} ../build_windows_x64_vc17_Release/bin/Release
+      run: 7z a -m0=LZMA2 -mx9 ${{ env.arc_path }} ../build_windows_x64_vc17_RelWithDebInfo/bin/RelWithDebInfo
     - name: Upload Artifact
       uses: actions/upload-artifact@main
       if: false
