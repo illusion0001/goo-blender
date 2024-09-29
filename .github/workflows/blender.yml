@@ -21,7 +21,7 @@ jobs:
     - name: Create working folders
       run: |
         mkdir ${{ env.lib_dir }}
-        $libFolder = "${{ github.workspace }}\lib"
+        $libFolder = "${{ github.workspace }}\lib\windows_x64"
         Remove-Item -Path $libFolder -Force -Recurse
         New-Item -ItemType SymbolicLink -Path $libFolder -Target "${{ env.lib_dir }}"
         $cmdOutput = Split-Path -Path $pwd -Leaf
